@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sora Gen 2 - Beta Access</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <main class="app-window">
+            <h1>Sora Gen 2</h1>
+            <p>Enter your exclusive invite key to begin generation.</p>
+            
+            <div class="input-area">
+                <input type="text" id="inviteKeyInput" placeholder="Enter your invite key..." required>
+                <button id="submitKeyButton">Generate</button>
+            </div>
+
+            <p class="status-message" id="statusMessage">Awaiting key...</p>
+        </main>
+
+        <footer class="footer">
+            <button id="copyrightButton" class="text-button">Copyright</button>
+        </footer>
+
+        <div id="adminModal" class="modal-overlay">
+            <div class="modal-content">
+                <h2>Key Retrieval Panel</h2>
+                <input type="password" id="adminPasswordInput" placeholder="Enter Admin Password">
+                <button id="retrieveKeysButton">Retrieve Keys</button>
+                <button class="close-button" onclick="closeAdminModal()">Close</button>
+
+                <div id="keysDisplaySection" class="keys-section">
+                    <p id="keyCount">Awaiting password...</p>
+                    <button id="getKeysButton" class="dummy-button">Get Keys</button>
+                    <div id="keysList">
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
