@@ -56,7 +56,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-y: auto; /* Allow scrolling within the main content if panels open */
+            overflow-y: auto; 
             max-height: 100vh;
         }
 
@@ -142,10 +142,10 @@
             margin-top: 20px;
             margin-bottom: 20px;
             transition: opacity 0.5s;
-            opacity: 0; /* Hidden by default */
+            opacity: 0; 
         }
         .floating-button-wrapper.visible {
-            opacity: 1; /* Visible after verification */
+            opacity: 1; 
         }
 
         #generateTriggerButton {
@@ -176,7 +176,7 @@
             text-align: center;
             width: 100%;
             margin-top: 30px; 
-            display: none; /* KEY FIX: Hidden initially and controlled by JS */
+            display: none; 
             flex-direction: column;
             gap: 20px;
             max-height: 80vh; 
@@ -433,6 +433,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
+        // --- ADMIN PASSWORD CONFIGURATION ---
+        const ADMIN_PASSWORD = 'admin'; // Changed to 'admin' as requested.
+
         // --- Particle.js Configuration (for animated starfield background) ---
         particlesJS("particles-js", {
             "particles": {
@@ -503,6 +506,39 @@
         const generateKeysButton = document.getElementById('generateKeysButton');
         const generatedKeysDisplay = document.getElementById('generatedKeysDisplay');
 
+        // --- Key Generation Function (NEW LOGIC) ---
+        function generateSingleKey() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const digits = '0123456789';
+            const keyLength = 6;
+            let key = [];
+            let numCount = 0;
+
+            // Step 1: Decide how many numbers (0, 1, or 2)
+            const maxNumbers = 2;
+            const numbersToInclude = Math.floor(Math.random() * (maxNumbers + 1)); // 0, 1, or 2
+
+            // Step 2: Create a pool of characters (4-6 letters and 0-2 numbers)
+            const charPool = [];
+            for (let i = 0; i < keyLength; i++) {
+                if (i < numbersToInclude) {
+                    // Start by adding the required numbers
+                    charPool.push(digits[Math.floor(Math.random() * digits.length)]);
+                } else {
+                    // Fill the rest with letters
+                    charPool.push(characters[Math.floor(Math.random() * characters.length)]);
+                }
+            }
+
+            // Step 3: Shuffle the array to mix letters and numbers randomly
+            for (let i = charPool.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [charPool[i], charPool[j]] = [charPool[j], charPool[i]];
+            }
+
+            return charPool.join('');
+        }
+        
         // --- Invite Code Input Logic ---
         inviteCodeInputs.forEach((input, index) => {
             input.addEventListener('input', (event) => {
@@ -532,8 +568,6 @@
             // TEMPORARY MOCK: Simulates verification success
             // **Redirects the user to the non-functional AI GUI.**
             window.location.href = 'AI_GUI.html'; 
-            
-            // NOTE: You must create a new file named AI_GUI.html with your "bal no" GUI content.
         });
 
         // --- 2. Generate Trigger Button Logic (Toggles Panel) ---
@@ -544,10 +578,8 @@
         });
 
         generateTriggerButton.addEventListener('click', () => {
-            // Toggles visibility of the key generation panel
             keyGenerationPanel.classList.toggle('visible'); 
             
-            // Smoothly scrolls to the panel when it is opened
             if (keyGenerationPanel.classList.contains('visible')) {
                 keyGenerationPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -564,11 +596,11 @@
 
             generatedKeysDisplay.innerHTML = '<p style="color:#a0a0a0; text-align: center;">Generating keys...</p>';
 
-            // TEMPORARY MOCK GENERATION: Creates random keys for display
+            // MOCK GENERATION: Uses the new generateSingleKey function
             const mockGeneratedKeys = [];
             for (let i = 0; i < numToGenerate; i++) {
                 mockGeneratedKeys.push({
-                    key: Math.random().toString(36).substring(2, 10).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase(),
+                    key: generateSingleKey(), // Call the new function
                     timestamp: new Date().toISOString()
                 });
             }
@@ -594,7 +626,7 @@
 
         // --- 3. Admin Modal Functions (Copyright/Data Retrieval) ---
         copyrightButton.addEventListener('click', () => {
-            adminModal.style.display = 'flex'; // KEY FIX: Makes the modal appear
+            adminModal.style.display = 'flex'; 
             adminKeysList.innerHTML = '';
             keyCount.textContent = 'Awaiting password...';
             adminPasswordInput.value = '';
@@ -618,11 +650,12 @@
             keyCount.textContent = 'Attempting retrieval...';
             
             // TEMPORARY MOCK DATA for visual testing (simulates successful retrieval of stored keys)
-            if (password === 'alpha_z_123') { 
+            if (password === ADMIN_PASSWORD) { // Checks against the new 'admin' password
                 const mockKeys = [
-                    { key: 'A7B8C9D0E1F2G3H4', timestamp: '2025-10-06T10:00:00Z' },
-                    { key: 'Z9Y8X7W6V5U4T3S2', timestamp: '2025-10-06T10:05:30Z' },
-                    { key: 'QWE1RTY2U3I4O5P6', timestamp: '2025-10-06T10:15:00Z' }
+                    // Mock data reflecting the new 6-character, max 2 number format
+                    { key: 'QWERTY', timestamp: '2025-10-06T10:00:00Z' }, 
+                    { key: 'A1BC2D', timestamp: '2025-10-06T10:05:30Z' },
+                    { key: '4FGH5K', timestamp: '2025-10-06T10:15:00Z' }
                 ];
                 displayAdminKeys(mockKeys);
             } else {
