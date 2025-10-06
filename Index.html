@@ -30,7 +30,7 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden; /* Hide scrollbars for animated background */
+            overflow: hidden; 
         }
 
         /* --- Animated Background (Particles.js container) --- */
@@ -43,33 +43,35 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: 50% 50%;
-            z-index: -1; /* Send to back */
+            z-index: -1; 
         }
 
         /* --- Main Content Container --- */
         .container {
-            position: relative; /* For z-index over particles */
+            position: relative; 
             z-index: 1;
             width: 100%;
-            max-width: 400px; /* Slimmer for mobile app feel */
+            max-width: 400px; 
             padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-y: auto; /* Allow scrolling within the main content if panels open */
+            max-height: 100vh;
         }
 
         /* --- App Window Styling --- */
         .app-window {
             background-color: var(--mid-blue);
             padding: 30px;
-            border-radius: 30px; /* More rounded */
+            border-radius: 30px; 
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
             text-align: center;
             width: 100%;
         }
 
         h1 {
-            font-size: 1.8em; /* Slightly smaller for app feel */
+            font-size: 1.8em; 
             margin-bottom: 10px;
             font-weight: 700;
             color: var(--light-text);
@@ -85,18 +87,18 @@
         .invite-inputs {
             display: flex;
             justify-content: center;
-            gap: 8px; /* Spacing between inputs */
+            gap: 8px; 
             margin-bottom: 30px;
         }
 
         .invite-inputs input {
-            width: 40px; /* Fixed width for each input */
+            width: 40px; 
             height: 40px;
             text-align: center;
             font-size: 1.2em;
             background-color: var(--input-bg);
             border: 2px solid var(--border-color);
-            border-radius: 12px; /* Rounded inputs */
+            border-radius: 12px; 
             color: var(--light-text);
             outline: none;
             caret-color: var(--accent-color);
@@ -136,15 +138,14 @@
 
         /* --- Floating Generate Button --- */
         .floating-button-wrapper {
-            position: absolute; /* Position relative to .container */
-            bottom: -50px; /* Initially off-screen */
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 40px); /* Match app-window width */
-            transition: bottom 0.5s ease-out; /* Smooth slide-in */
+            width: calc(100% - 40px);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            transition: opacity 0.5s;
+            opacity: 0; /* Hidden by default */
         }
         .floating-button-wrapper.visible {
-            bottom: 20px; /* Slide into view */
+            opacity: 1; /* Visible after verification */
         }
 
         #generateTriggerButton {
@@ -174,11 +175,11 @@
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
             text-align: center;
             width: 100%;
-            margin-top: 30px; /* Spacing from main window */
-            display: none; /* Hidden initially */
+            margin-top: 30px; 
+            display: none; /* KEY FIX: Hidden initially and controlled by JS */
             flex-direction: column;
             gap: 20px;
-            max-height: 80vh; /* Limit height for scrolling */
+            max-height: 80vh; 
         }
 
         #keyGenerationPanel.visible {
@@ -228,13 +229,13 @@
             background-color: var(--input-bg);
             border-radius: 12px;
             padding: 15px;
-            max-height: 250px; /* Fixed height for scrolling */
-            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 250px; 
+            overflow-y: auto; 
             text-align: left;
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            gap: 8px; /* Space between key entries */
+            gap: 8px; 
         }
 
         .generated-key-item {
@@ -251,7 +252,7 @@
         .generated-key-item .timestamp {
             font-size: 0.8em;
             color: var(--subtle-text);
-            white-space: nowrap; /* Prevent timestamp from wrapping */
+            white-space: nowrap; 
             margin-left: 10px;
         }
 
@@ -280,11 +281,11 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
-            display: none; /* Hidden by default */
+            display: none; 
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            backdrop-filter: blur(5px); /* Frosty background */
+            backdrop-filter: blur(5px); 
         }
 
         .modal-content {
@@ -351,7 +352,7 @@
             padding: 10px;
             border: none;
             border-radius: 8px;
-            background-color: #555555; /* Non-functional look */
+            background-color: #555555; 
             color: var(--light-text);
             font-weight: 600;
             margin-bottom: 10px;
@@ -373,7 +374,8 @@
     </style>
 </head>
 <body>
-    <div id="particles-js"></div> <div class="container">
+    <div id="particles-js"></div> 
+    <div class="container">
         <main class="app-window">
             <h1>Sora is invite only</h1>
             <p class="subtitle">If you have an invite code, enter it below.</p>
@@ -427,6 +429,7 @@
                 </div>
             </div>
         </div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script>
@@ -444,99 +447,39 @@
                     "value": "#ffffff"
                 },
                 "shape": {
-                    "type": "circle",
-                    "stroke": {
-                        "width": 0,
-                        "color": "#000000"
-                    },
-                    "polygon": {
-                        "nb_sides": 5
-                    },
-                    "image": {
-                        "src": "img/github.svg",
-                        "width": 100,
-                        "height": 100
-                    }
+                    "type": "circle"
                 },
                 "opacity": {
                     "value": 0.5,
-                    "random": false,
-                    "anim": {
-                        "enable": false,
-                        "speed": 1,
-                        "opacity_min": 0.1,
-                        "sync": false
-                    }
+                    "random": false
                 },
                 "size": {
                     "value": 3,
-                    "random": true,
-                    "anim": {
-                        "enable": false,
-                        "speed": 40,
-                        "size_min": 0.1,
-                        "sync": false
-                    }
+                    "random": true
                 },
                 "line_linked": {
-                    "enable": false, // No lines between particles
-                    "distance": 150,
-                    "color": "#ffffff",
-                    "opacity": 0.4,
-                    "width": 1
+                    "enable": false
                 },
                 "move": {
                     "enable": true,
-                    "speed": 1, // Slower movement for stars
+                    "speed": 1, 
                     "direction": "none",
                     "random": true,
                     "straight": false,
                     "out_mode": "out",
-                    "bounce": false,
-                    "attract": {
-                        "enable": false,
-                        "rotateX": 600,
-                        "rotateY": 1200
-                    }
+                    "bounce": false
                 }
             },
             "interactivity": {
                 "detect_on": "canvas",
                 "events": {
                     "onhover": {
-                        "enable": false, // No interaction on hover
-                        "mode": "grab"
+                        "enable": false
                     },
                     "onclick": {
-                        "enable": false, // No interaction on click
-                        "mode": "push"
+                        "enable": false
                     },
                     "resize": true
-                },
-                "modes": {
-                    "grab": {
-                        "distance": 140,
-                        "line_linked": {
-                            "opacity": 1
-                        }
-                    },
-                    "bubble": {
-                        "distance": 400,
-                        "size": 40,
-                        "duration": 2,
-                        "opacity": 8,
-                        "speed": 3
-                    },
-                    "repulse": {
-                        "distance": 200,
-                        "duration": 0.4
-                    },
-                    "push": {
-                        "particles_nb": 4
-                    },
-                    "remove": {
-                        "particles_nb": 2
-                    }
                 }
             },
             "retina_detect": true
@@ -552,7 +495,7 @@
         const adminPasswordInput = document.getElementById('adminPasswordInput');
         const adminKeysList = document.getElementById('adminKeysList');
         const keyCount = document.getElementById('keyCount');
-        const getKeysButton = document.getElementById('getKeysButton'); // Dummy button
+        const getKeysButton = document.getElementById('getKeysButton'); 
         const generateTriggerButton = document.getElementById('generateTriggerButton');
         const generateButtonWrapper = document.getElementById('generateButtonWrapper');
         const keyGenerationPanel = document.getElementById('keyGenerationPanel');
@@ -563,7 +506,6 @@
         // --- Invite Code Input Logic ---
         inviteCodeInputs.forEach((input, index) => {
             input.addEventListener('input', (event) => {
-                // Capitalize input and move focus
                 input.value = event.data ? event.data.toUpperCase() : '';
                 if (input.value.length === 1 && index < inviteCodeInputs.length - 1) {
                     inviteCodeInputs[index + 1].focus();
@@ -577,57 +519,41 @@
             });
         });
 
-        // --- Verify Button Logic (Stub for API call) ---
+        // --- 1. Verify Button Logic (Redirects to "AI" Page) ---
         verifyButton.addEventListener('click', async () => {
             const inviteCode = Array.from(inviteCodeInputs).map(input => input.value).join('');
             
             if (inviteCode.length !== 6) {
                 statusMessage.textContent = 'Please enter a 6-character invite code.';
-                statusMessage.style.color = var(--error-color);
+                statusMessage.style.color = '#e74c3c'; // error-color
                 return;
             }
 
-            statusMessage.textContent = 'Verifying invite code...';
-            statusMessage.style.color = var(--subtle-text);
-
-            // This is where you would call your API to verify the invite code.
-            // For now, it will simulate a successful verification.
-            // Example API call:
-            /*
-            const response = await fetch('/.netlify/functions/verify-invite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: inviteCode })
-            });
-
-            if (response.ok) {
-                // If verified, proceed to key generation logic
-                statusMessage.textContent = 'Invite code verified! Click Generate Keys.';
-                statusMessage.style.color = var(--success-color);
-                generateButtonWrapper.classList.add('visible'); // Show generate button
-                // You might also want to hide the verify section here
-            } else {
-                statusMessage.textContent = 'Invalid invite code.';
-                statusMessage.style.color = var(--error-color);
-            }
-            */
-
-            // TEMPORARY: Simulate success after verification
-            statusMessage.textContent = 'Invite code verified! Click Generate Keys.';
-            statusMessage.style.color = var(--success-color);
-            generateButtonWrapper.classList.add('visible'); // Slide in the generate button
+            // TEMPORARY MOCK: Simulates verification success
+            // **Redirects the user to the non-functional AI GUI.**
+            window.location.href = 'AI_GUI.html'; 
+            
+            // NOTE: You must create a new file named AI_GUI.html with your "bal no" GUI content.
         });
 
-        // --- Generate Trigger Button Logic ---
+        // --- 2. Generate Trigger Button Logic (Toggles Panel) ---
+        // This button must be initially made visible after a simulated verification/load:
+        document.addEventListener('DOMContentLoaded', () => {
+             // For the purpose of testing the button functionality, we make the wrapper visible on load:
+             generateButtonWrapper.classList.add('visible'); 
+        });
+
         generateTriggerButton.addEventListener('click', () => {
-            keyGenerationPanel.classList.toggle('visible'); // Toggle visibility of the panel
-            // Scroll to the panel if it becomes visible
+            // Toggles visibility of the key generation panel
+            keyGenerationPanel.classList.toggle('visible'); 
+            
+            // Smoothly scrolls to the panel when it is opened
             if (keyGenerationPanel.classList.contains('visible')) {
                 keyGenerationPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
 
-        // --- Generate Keys Button Logic (Stub for API call) ---
+        // --- Generate Keys Button Logic (Mocks key generation) ---
         generateKeysButton.addEventListener('click', async () => {
             const numToGenerate = parseInt(numKeysInput.value, 10);
 
@@ -636,25 +562,9 @@
                 return;
             }
 
-            generatedKeysDisplay.innerHTML = '<p style="color:var(--subtle-text); text-align: center;">Generating keys...</p>';
+            generatedKeysDisplay.innerHTML = '<p style="color:#a0a0a0; text-align: center;">Generating keys...</p>';
 
-            // In a real setup, this is where you'd call your Netlify Function API:
-            /*
-            const response = await fetch('/.netlify/functions/generate-keys', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ count: numToGenerate })
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                displayGeneratedKeys(data.generatedKeys);
-            } else {
-                generatedKeysDisplay.innerHTML = '<p style="color:var(--error-color); text-align: center;">Error generating keys.</p>';
-            }
-            */
-            
-            // TEMPORARY MOCK GENERATION for visual testing
+            // TEMPORARY MOCK GENERATION: Creates random keys for display
             const mockGeneratedKeys = [];
             for (let i = 0; i < numToGenerate; i++) {
                 mockGeneratedKeys.push({
@@ -667,9 +577,9 @@
 
         // Function to display newly generated keys
         function displayGeneratedKeys(keys) {
-            generatedKeysDisplay.innerHTML = ''; // Clear previous messages
+            generatedKeysDisplay.innerHTML = ''; 
             if (keys.length === 0) {
-                generatedKeysDisplay.innerHTML = '<p style="color:var(--subtle-text); text-align: center;">No keys generated.</p>';
+                generatedKeysDisplay.innerHTML = '<p style="color:#a0a0a0; text-align: center;">No keys generated.</p>';
                 return;
             }
             keys.forEach(item => {
@@ -682,9 +592,9 @@
         }
 
 
-        // --- Admin Modal Functions (Same as before) ---
+        // --- 3. Admin Modal Functions (Copyright/Data Retrieval) ---
         copyrightButton.addEventListener('click', () => {
-            adminModal.style.display = 'flex';
+            adminModal.style.display = 'flex'; // KEY FIX: Makes the modal appear
             adminKeysList.innerHTML = '';
             keyCount.textContent = 'Awaiting password...';
             adminPasswordInput.value = '';
@@ -707,11 +617,12 @@
 
             keyCount.textContent = 'Attempting retrieval...';
             
-            // TEMPORARY MOCK DATA for visual testing
-            if (password === 'alpha_z_123') { // Replace 'alpha_z_123' with your actual password in the final API
+            // TEMPORARY MOCK DATA for visual testing (simulates successful retrieval of stored keys)
+            if (password === 'alpha_z_123') { 
                 const mockKeys = [
                     { key: 'A7B8C9D0E1F2G3H4', timestamp: '2025-10-06T10:00:00Z' },
-                    { key: 'Z9Y8X7W6V5U4T3S2', timestamp: '2025-10-06T10:05:30Z' }
+                    { key: 'Z9Y8X7W6V5U4T3S2', timestamp: '2025-10-06T10:05:30Z' },
+                    { key: 'QWE1RTY2U3I4O5P6', timestamp: '2025-10-06T10:15:00Z' }
                 ];
                 displayAdminKeys(mockKeys);
             } else {
